@@ -1,8 +1,8 @@
 {
-    "name": "Default Controls",
+    "name": "Mouse",
     "maps": [
         {
-            "name": "Mouse",
+            "name": "MouseInput",
             "id": "d3f5e5e5-a158-40c8-9f5e-edf448a3149e",
             "actions": [
                 {

@@ -5,13 +5,13 @@ using UnityEngine.Tilemaps;
 
 public class PlayerEntity : Entity
 {
-    public Tile testTile;
     public Dictionary<Vector2Int, Vector2Int> possibleSquares = new();
 
     private void Start()
     {
         possibleSquares = FindPathsAtPoint((Vector2Int)position);
         MoveTo(position);
+        print("Revealing");
         RevealSquares();
     }
 
@@ -35,6 +35,7 @@ public class PlayerEntity : Entity
     {
         foreach(var key in possibleSquares.Keys)
         {
+            print("Done");
             gameManager.nodeMap[key].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         }
     }

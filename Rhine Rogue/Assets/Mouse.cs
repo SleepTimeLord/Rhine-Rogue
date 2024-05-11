@@ -15,16 +15,16 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public partial class @MouseInput: IInputActionCollection2, IDisposable
+public partial class @Mouse: IInputActionCollection2, IDisposable
 {
     public InputActionAsset asset { get; }
-    public @MouseInput()
+    public @Mouse()
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""Mouse"",
     ""maps"": [
         {
-            ""name"": ""Mouse"",
+            ""name"": ""MouseInput"",
             ""id"": ""d3f5e5e5-a158-40c8-9f5e-edf448a3149e"",
             ""actions"": [
                 {
@@ -74,10 +74,10 @@ public partial class @MouseInput: IInputActionCollection2, IDisposable
     ],
     ""controlSchemes"": []
 }");
-        // Mouse
-        m_Mouse = asset.FindActionMap("Mouse", throwIfNotFound: true);
-        m_Mouse_LeftClick = m_Mouse.FindAction("LeftClick", throwIfNotFound: true);
-        m_Mouse_MousePosition = m_Mouse.FindAction("MousePosition", throwIfNotFound: true);
+        // MouseInput
+        m_MouseInput = asset.FindActionMap("MouseInput", throwIfNotFound: true);
+        m_MouseInput_LeftClick = m_MouseInput.FindAction("LeftClick", throwIfNotFound: true);
+        m_MouseInput_MousePosition = m_MouseInput.FindAction("MousePosition", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -136,26 +136,26 @@ public partial class @MouseInput: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Mouse
-    private readonly InputActionMap m_Mouse;
-    private List<IMouseActions> m_MouseActionsCallbackInterfaces = new List<IMouseActions>();
-    private readonly InputAction m_Mouse_LeftClick;
-    private readonly InputAction m_Mouse_MousePosition;
-    public struct MouseActions
+    // MouseInput
+    private readonly InputActionMap m_MouseInput;
+    private List<IMouseInputActions> m_MouseInputActionsCallbackInterfaces = new List<IMouseInputActions>();
+    private readonly InputAction m_MouseInput_LeftClick;
+    private readonly InputAction m_MouseInput_MousePosition;
+    public struct MouseInputActions
     {
-        private @MouseInput m_Wrapper;
-        public MouseActions(@MouseInput wrapper) { m_Wrapper = wrapper; }
-        public InputAction @LeftClick => m_Wrapper.m_Mouse_LeftClick;
-        public InputAction @MousePosition => m_Wrapper.m_Mouse_MousePosition;
-        public InputActionMap Get() { return m_Wrapper.m_Mouse; }
+        private @Mouse m_Wrapper;
+        public MouseInputActions(@Mouse wrapper) { m_Wrapper = wrapper; }
+        public InputAction @LeftClick => m_Wrapper.m_MouseInput_LeftClick;
+        public InputAction @MousePosition => m_Wrapper.m_MouseInput_MousePosition;
+        public InputActionMap Get() { return m_Wrapper.m_MouseInput; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(MouseActions set) { return set.Get(); }
-        public void AddCallbacks(IMouseActions instance)
+        public static implicit operator InputActionMap(MouseInputActions set) { return set.Get(); }
+        public void AddCallbacks(IMouseInputActions instance)
         {
-            if (instance == null || m_Wrapper.m_MouseActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_MouseActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_MouseInputActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_MouseInputActionsCallbackInterfaces.Add(instance);
             @LeftClick.started += instance.OnLeftClick;
             @LeftClick.performed += instance.OnLeftClick;
             @LeftClick.canceled += instance.OnLeftClick;
@@ -164,7 +164,7 @@ public partial class @MouseInput: IInputActionCollection2, IDisposable
             @MousePosition.canceled += instance.OnMousePosition;
         }
 
-        private void UnregisterCallbacks(IMouseActions instance)
+        private void UnregisterCallbacks(IMouseInputActions instance)
         {
             @LeftClick.started -= instance.OnLeftClick;
             @LeftClick.performed -= instance.OnLeftClick;
@@ -174,22 +174,22 @@ public partial class @MouseInput: IInputActionCollection2, IDisposable
             @MousePosition.canceled -= instance.OnMousePosition;
         }
 
-        public void RemoveCallbacks(IMouseActions instance)
+        public void RemoveCallbacks(IMouseInputActions instance)
         {
-            if (m_Wrapper.m_MouseActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_MouseInputActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IMouseActions instance)
+        public void SetCallbacks(IMouseInputActions instance)
         {
-            foreach (var item in m_Wrapper.m_MouseActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_MouseInputActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_MouseActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_MouseInputActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public MouseActions @Mouse => new MouseActions(this);
-    public interface IMouseActions
+    public MouseInputActions @MouseInput => new MouseInputActions(this);
+    public interface IMouseInputActions
     {
         void OnLeftClick(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);

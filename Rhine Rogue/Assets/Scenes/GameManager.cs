@@ -12,14 +12,14 @@ public class GameManager : MonoBehaviour
     private const float tileHeightOffset = 0.095f;
     public Tilemap tilemap;
     public Dictionary<Vector2Int, GameObject> nodeMap = new();
-    public MouseInput mouseInput;
+    public Mouse mouseInput;
     public PlayerEntity playerEntity;
     public GameObject overlayTile;
     public GameObject overlayContainer;
 
     private void Awake()
     {
-        mouseInput = new MouseInput();
+        mouseInput = new Mouse();
     }
 
     private void OnEnable()
@@ -34,13 +34,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        mouseInput.Mouse.LeftClick.performed += _ => MouseClick();
+        mouseInput.MouseInput.LeftClick.performed += _ => MouseClick();
         GenerateMap();
     }
 
     private void MouseClick()
     {
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(mouseInput.Mouse.MousePosition.ReadValue<Vector2>());
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
         RaycastHit2D[] raycastHits = Physics2D.RaycastAll(mousePosition, Vector2.zero);
         if(raycastHits.Length > 0)
         {
