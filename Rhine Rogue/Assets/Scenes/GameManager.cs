@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
                             if (z != 0)
                                 nodeMap[(Vector2Int)currentTile].transform.position -= new Vector3(0, tileHeightOffset);
                             nodeMap[(Vector2Int)currentTile].GetComponent<TileProperties>().SetVars(currentTile, 1, (Tile)tile);
+                            nodeMap[(Vector2Int)currentTile].GetComponent<SpriteRenderer>().sortingLayerName = "Overlay";
                             //print($"Added key ({x}, {y}) at height {z}");
                         }
                     }
