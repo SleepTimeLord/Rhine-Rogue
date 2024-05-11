@@ -80,5 +80,6 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+        playerEntity.Initialize();
     }
 }

@@ -7,7 +7,7 @@ public class PlayerEntity : Entity
 {
     public Dictionary<Vector2Int, Vector2Int> possibleSquares = new();
 
-    private void Start()
+    public void Initialize()
     {
         possibleSquares = FindPathsAtPoint((Vector2Int)position);
         MoveTo(position);
