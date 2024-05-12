@@ -60,7 +60,7 @@ public partial class @Mouse: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""d1b04a5a-9163-4a64-9096-b473a07ff14d"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""LeftClick"",

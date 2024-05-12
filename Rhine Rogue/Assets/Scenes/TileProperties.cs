@@ -10,6 +10,7 @@ public class TileProperties : MonoBehaviour
     public TerrainType terrain;
     public int movementCost;
     public Tile tile;
+    public Entity occupier;
 
     public void SetVars(Vector3Int position, int movementCost, Tile tile)
     {

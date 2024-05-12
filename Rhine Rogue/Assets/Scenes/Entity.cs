@@ -5,82 +5,142 @@ using UnityEngine.Tilemaps;
 
 public class Entity : MonoBehaviour
 {
+    public static GameManager gameManager;
+
     public const float yOffset = 0.375f;
     public float health;
+    public float currentHealth;
     public Vector3Int position;
     public RaceType raceType;
     public int speed;
     public int initiative;
     public int baseInitiative;
     public float attack;
-    public Tilemap tilemap;
-    public GameManager gameManager;
+    
     //public List<*something*> skills;
+
+    public delegate void EntityInitilization();
+    public static event EntityInitilization EntityInitilized;
+
+    void OnEnable()
+    {
+        GameManager.MapGenerated += Initialize;
+    }
+
+
+    void OnDisable()
+    {
+        GameManager.MapGenerated -= Initialize;
+    }
+
+    public virtual void Initialize()
+    {
+        MoveTo(position);
+        RollInitiative();
+        EntityInitilized();
+    }
+
+    public void RollInitiative()
+    {
+        initiative = baseInitiative + Random.Range(1, 21);
+    }
 
     public virtual void MoveTo(Vector3Int position)
     {
-        Vector3Int nodePosition = gameManager.nodeMap[(Vector2Int)position].GetComponent<TileProperties>().position;
-        transform.position = tilemap.GetCellCenterWorld(nodePosition) + new Vector3(0, yOffset);
+        gameManager.nodeMap[(Vector2Int)this.position].GetComponent<TileProperties>().occupier = null;
+        Vector3Int nodePosition = gameManager.nodeMap[(Vector2Int)position].GetComponent<TileProperties>().position; // Just in case the Z on position is wrong
+        transform.position = gameManager.tilemap.GetCellCenterWorld(nodePosition) + new Vector3(0, yOffset);
         this.position = nodePosition;
+        gameManager.nodeMap[(Vector2Int)position].GetComponent<TileProperties>().occupier = this;
     }
 
-    public Dictionary<Vector2Int, Vector2Int> FindPathsAtPoint(Vector2Int origin)
+    public static Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> FindPathsAtPoint(Vector2Int origin, float maxSearchDistance)
     {
-        Dictionary<Vector2Int, Vector2Int> paths = new();
+        return FindPathsAtPoint(origin, null, maxSearchDistance).nodes;
+    }
+
+    /// <summary>
+    /// Returns the location of the nearest target, the cost to go to the target, and the path towards it. Returns the origin if the target is not found.
+    /// </summary>
+    /// <param name="origin"></param>
+    /// <param name="targets"></param>
+    /// <param name="maxSearchDistance"></param>
+    /// <returns>The paths, movement costs to those nodes, and the node of a target</returns>
+    public static (Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> nodes, Vector2Int location) FindPathsAtPoint(Vector2Int origin, List<Entity> targets, float maxSearchDistance)
+    {
+        Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> nodes = new();
         Dictionary<Vector2Int, GameObject> map = gameManager.nodeMap;
-        List<Vector2Int> nodes = new();
-        Dictionary<Vector2Int, float> movementCost = new();
-        nodes.Add(origin);
-        movementCost[origin] = speed;
+        List<Vector2Int> nodeList = new();
+        nodeList.Add(origin);
+        nodes.Add(origin, (origin, 0));
         
-        while(nodes.Count > 0)
+        while(nodeList.Count > 0)
         {
-            Vector2Int currentNode = nodes[0];
+            Vector2Int currentNode = nodeList[0];
             Vector2Int neighbor = currentNode + new Vector2Int(1, 0);
-            CheckTile(neighbor, nodes, paths, map, movementCost, currentNode);
-            neighbor = currentNode + new Vector2Int(-1, 0);
-            CheckTile(neighbor, nodes, paths, map, movementCost, currentNode);
-            neighbor = currentNode + new Vector2Int(0, 1);
-            CheckTile(neighbor, nodes, paths, map, movementCost, currentNode);
-            neighbor = currentNode + new Vector2Int(0, -1);
-            CheckTile(neighbor, nodes, paths, map, movementCost, currentNode);
-            nodes.RemoveAt(0);
-        }
-        paths.Remove(origin);
-        return paths;
-    }
-
-    private void CheckTile(Vector2Int neighbor, List<Vector2Int> nodes, Dictionary<Vector2Int, Vector2Int> paths, Dictionary<Vector2Int, GameObject> map, Dictionary<Vector2Int, float> movementCost, Vector2Int currentNode)
-    {
-        if (map.ContainsKey(neighbor) && CanMoveToTile(currentNode, neighbor) && movementCost[currentNode] - map[neighbor].GetComponent<TileProperties>().movementCost >= 0)
-        {
-            movementCost[neighbor] = movementCost[currentNode] - map[neighbor].GetComponent<TileProperties>().movementCost;
-            paths[neighbor] = currentNode;
-
-            int leftIndex = 0;
-            int rightIndex = nodes.Count;
-            while (rightIndex - leftIndex != 1) // Binary insertion sort
+            if(CheckTile(neighbor, nodes, nodeList, map, currentNode, maxSearchDistance, targets))
             {
-                int index = leftIndex + (rightIndex - leftIndex) / 2;
-                if (movementCost[nodes[index]] > movementCost[neighbor])
-                {
-                    leftIndex = index;
-                }
-                else if (movementCost[nodes[index]] < movementCost[neighbor])
-                {
-                    rightIndex = index;
-                }
-                else
-                {
-                    rightIndex = index;
-                    leftIndex = rightIndex - 1;
-                }
+                return (nodes, neighbor);
             }
-            nodes.Insert(rightIndex, neighbor);
+            neighbor = currentNode + new Vector2Int(-1, 0);
+            if(CheckTile(neighbor, nodes, nodeList, map, currentNode, maxSearchDistance, targets))
+            {
+                return (nodes, neighbor);
+            }
+            neighbor = currentNode + new Vector2Int(0, 1);
+            if(CheckTile(neighbor, nodes, nodeList, map, currentNode, maxSearchDistance, targets))
+            {
+                return (nodes, neighbor);
+            }
+            neighbor = currentNode + new Vector2Int(0, -1);
+            if(CheckTile(neighbor, nodes, nodeList, map, currentNode, maxSearchDistance, targets))
+            {
+                return (nodes, neighbor);
+            }
+            nodeList.RemoveAt(0);
         }
+        return (nodes, origin);
     }
 
-    protected bool CanMoveToTile(Vector2Int origin, Vector2Int neighbor)
+    private static bool CheckTile(Vector2Int neighbor, Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> nodes, List<Vector2Int> nodeList, Dictionary<Vector2Int, GameObject> map, Vector2Int currentNode, float maxSearchDistance, List<Entity> targets)
+    {
+        if (map.ContainsKey(neighbor) && CanMoveToTile(currentNode, neighbor) && (nodes[currentNode].cost + map[neighbor].GetComponent<TileProperties>().movementCost <= maxSearchDistance || maxSearchDistance == -1) && (map[neighbor].GetComponent<TileProperties>().occupier is PlayerEntity || map[neighbor].GetComponent<TileProperties>().occupier == null))
+        {
+            float costToMove = nodes[currentNode].cost + map[neighbor].GetComponent<TileProperties>().movementCost;
+            if (!nodes.ContainsKey(neighbor) || nodes[neighbor].cost > costToMove)
+            {
+                nodes[neighbor] = (currentNode, costToMove);
+                if(targets != null && targets.Contains(map[neighbor].GetComponent<TileProperties>().occupier))
+                {
+                    return true;
+                }
+                int leftIndex = 0;
+                int rightIndex = nodeList.Count;
+                
+                while (leftIndex != rightIndex) // Binary insertion sort
+                {
+                    int index = leftIndex + (rightIndex - leftIndex) / 2;
+                    if (nodes[nodeList[index]].cost < nodes[neighbor].cost)
+                    {
+                        leftIndex = index + 1;
+                    }
+                    else if (nodes[nodeList[index]].cost > nodes[neighbor].cost)
+                    {
+                        rightIndex = index;
+                    }
+                    else
+                    {
+                        rightIndex = index;
+                        leftIndex = index;
+                    }
+                }
+                nodeList.Insert(rightIndex, neighbor);
+            }
+        }
+        return false;
+    }
+
+    protected static bool CanMoveToTile(Vector2Int origin, Vector2Int neighbor)
     {
         TileProperties originNode = gameManager.nodeMap[origin].GetComponent<TileProperties>();
         TileProperties neighborNode = gameManager.nodeMap[neighbor].GetComponent<TileProperties>();

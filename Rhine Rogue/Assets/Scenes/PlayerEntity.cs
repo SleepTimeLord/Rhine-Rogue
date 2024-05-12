@@ -2,45 +2,69 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using TMPro;
 
 public class PlayerEntity : Entity
 {
-    public Dictionary<Vector2Int, Vector2Int> possibleSquares = new();
-
-    public void Initialize()
+    public static TextMeshProUGUI basicInfo;
+    private Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> possibleSquares = new();
+    private float remainingEnergy;
+    public float RemainingEnergy
     {
-        possibleSquares = FindPathsAtPoint((Vector2Int)position);
-        MoveTo(position);
-        print("Revealing");
-        RevealSquares();
+        get => remainingEnergy;
+        set 
+        {
+            remainingEnergy = value;
+            UpdateBasicInfo();
+        }
     }
 
-    public void MovePlayerTo(Vector3Int position)
+    public override void Initialize()
     {
-        if (possibleSquares.ContainsKey((Vector2Int)position))
+        currentHealth = health;
+        possibleSquares = FindPathsAtPoint((Vector2Int)position, speed);
+        base.Initialize();
+    }
+
+    public void UpdateBasicInfo()
+    {
+        basicInfo.text = $"HP: {currentHealth}/{health}\nEnergy: {remainingEnergy}/{speed}";
+    }
+
+    public bool MovePlayerTo(Vector3Int position)
+    {
+        if (possibleSquares.ContainsKey((Vector2Int)position) && gameManager.nodeMap[(Vector2Int)position].GetComponent<TileProperties>().occupier == null)
         {
-            MoveTo(position);
+            HideSquares();
+            RemainingEnergy -= possibleSquares[(Vector2Int)position].cost;
+            MoveTo(position);;
+            RevealSquares();
+            return true;
         }
+        return false;
     }
 
     public override void MoveTo(Vector3Int position)
     {
-        HideSquares();
         base.MoveTo(position);
-        possibleSquares = FindPathsAtPoint((Vector2Int)this.position);
-        RevealSquares();
+        CalculateSquares();
     }
 
-    private void RevealSquares()
+    public void CalculateSquares()
+    {
+        possibleSquares = FindPathsAtPoint((Vector2Int)this.position, remainingEnergy);
+    }
+
+    public void RevealSquares()
     {
         foreach(var key in possibleSquares.Keys)
         {
-            print("Done");
-            gameManager.nodeMap[key].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+            if (gameManager.nodeMap[key].GetComponent<TileProperties>().occupier == null)
+                gameManager.nodeMap[key].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         }
     }
 
-    private void HideSquares()
+    public void HideSquares()
     {
         foreach (var key in possibleSquares.Keys)
         {

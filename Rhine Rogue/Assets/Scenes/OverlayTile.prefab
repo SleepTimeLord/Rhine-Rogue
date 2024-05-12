@@ -151,3 +151,4 @@ MonoBehaviour:
   terrain: 1
   movementCost: 1
   tile: {fileID: 11400000, guid: 033d6f61f11961740aebb40daa29b30e, type: 2}
+  occupier: {fileID: 0}
