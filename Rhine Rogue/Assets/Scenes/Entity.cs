@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -9,24 +10,44 @@ public class Entity : MonoBehaviour
 
     public const float yOffset = 0.375f;
     public float health;
-    public float currentHealth;
-    public Vector3Int position;
+    private float currentHealth;
+    public float CurrentHealth
+    {
+        get => currentHealth;
+        set
+        {
+            if(value <= 0)
+            {
+                gameManager.RemoveEntity(this);
+            }
+            else
+            {
+                currentHealth = value;
+            }
+        }
+    }    
+    public Vector2Int position;
     public RaceType raceType;
     public int speed;
     public int initiative;
     public int baseInitiative;
     public float attack;
-    
-    //public List<*something*> skills;
+    public int actions;
+
+    public Weapon[] weapons;
 
     public delegate void EntityInitilization();
     public static event EntityInitilization EntityInitilized;
+
+    protected virtual void Start()
+    {
+        currentHealth = health;
+    }
 
     void OnEnable()
     {
         GameManager.MapGenerated += Initialize;
     }
-
 
     void OnDisable()
     {
@@ -45,13 +66,13 @@ public class Entity : MonoBehaviour
         initiative = baseInitiative + Random.Range(1, 21);
     }
 
-    public virtual void MoveTo(Vector3Int position)
+    public virtual void MoveTo(Vector2Int position)
     {
-        gameManager.nodeMap[(Vector2Int)this.position].GetComponent<TileProperties>().occupier = null;
-        Vector3Int nodePosition = gameManager.nodeMap[(Vector2Int)position].GetComponent<TileProperties>().position; // Just in case the Z on position is wrong
+        gameManager.nodeMap[this.position].occupier = null;
+        Vector3Int nodePosition = gameManager.nodeMap[position].position; // Just in case the Z on position is wrong
         transform.position = gameManager.tilemap.GetCellCenterWorld(nodePosition) + new Vector3(0, yOffset);
-        this.position = nodePosition;
-        gameManager.nodeMap[(Vector2Int)position].GetComponent<TileProperties>().occupier = this;
+        this.position = (Vector2Int) nodePosition;
+        gameManager.nodeMap[position].occupier = this;
     }
 
     public static Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> FindPathsAtPoint(Vector2Int origin, float maxSearchDistance)
@@ -69,7 +90,7 @@ public class Entity : MonoBehaviour
     public static (Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> nodes, Vector2Int location) FindPathsAtPoint(Vector2Int origin, List<Entity> targets, float maxSearchDistance)
     {
         Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> nodes = new();
-        Dictionary<Vector2Int, GameObject> map = gameManager.nodeMap;
+        Dictionary<Vector2Int, TileProperties> map = gameManager.nodeMap;
         List<Vector2Int> nodeList = new();
         nodeList.Add(origin);
         nodes.Add(origin, (origin, 0));
@@ -102,15 +123,15 @@ public class Entity : MonoBehaviour
         return (nodes, origin);
     }
 
-    private static bool CheckTile(Vector2Int neighbor, Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> nodes, List<Vector2Int> nodeList, Dictionary<Vector2Int, GameObject> map, Vector2Int currentNode, float maxSearchDistance, List<Entity> targets)
+    private static bool CheckTile(Vector2Int neighbor, Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> nodes, List<Vector2Int> nodeList, Dictionary<Vector2Int, TileProperties> map, Vector2Int currentNode, float maxSearchDistance, List<Entity> targets)
     {
-        if (map.ContainsKey(neighbor) && CanMoveToTile(currentNode, neighbor) && (nodes[currentNode].cost + map[neighbor].GetComponent<TileProperties>().movementCost <= maxSearchDistance || maxSearchDistance == -1) && (map[neighbor].GetComponent<TileProperties>().occupier is PlayerEntity || map[neighbor].GetComponent<TileProperties>().occupier == null))
+        if (map.ContainsKey(neighbor) && CanMoveToTile(currentNode, neighbor) && (nodes[currentNode].cost + map[neighbor].movementCost <= maxSearchDistance || maxSearchDistance == -1) && (map[neighbor].occupier is PlayerEntity || map[neighbor].occupier == null))
         {
-            float costToMove = nodes[currentNode].cost + map[neighbor].GetComponent<TileProperties>().movementCost;
+            float costToMove = nodes[currentNode].cost + map[neighbor].movementCost;
             if (!nodes.ContainsKey(neighbor) || nodes[neighbor].cost > costToMove)
             {
                 nodes[neighbor] = (currentNode, costToMove);
-                if(targets != null && targets.Contains(map[neighbor].GetComponent<TileProperties>().occupier))
+                if(targets != null && targets.Contains(map[neighbor].occupier))
                 {
                     return true;
                 }
@@ -142,8 +163,8 @@ public class Entity : MonoBehaviour
 
     protected static bool CanMoveToTile(Vector2Int origin, Vector2Int neighbor)
     {
-        TileProperties originNode = gameManager.nodeMap[origin].GetComponent<TileProperties>();
-        TileProperties neighborNode = gameManager.nodeMap[neighbor].GetComponent<TileProperties>();
+        TileProperties originNode = gameManager.nodeMap[origin];
+        TileProperties neighborNode = gameManager.nodeMap[neighbor];
         return Mathf.Abs(originNode.position.z - neighborNode.position.z) <= 1 && neighborNode.terrain == TerrainType.Ground;
     }
 }

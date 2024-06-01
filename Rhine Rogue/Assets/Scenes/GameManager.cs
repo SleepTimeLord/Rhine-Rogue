@@ -5,18 +5,27 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     private const float initialTileYOffset = 0.375f;
     private const float tileHeightOffset = 0.095f;
     public Tilemap tilemap;
-    public Dictionary<Vector2Int, GameObject> nodeMap = new();
+    public Dictionary<Vector2Int, TileProperties> nodeMap = new();
     public Mouse mouseInput;
     public GameObject overlayTile;
     public GameObject overlayContainer;
     public GameObject cursor;
+
+    public GameObject weaponPanel;
+    public GameObject weaponButton;
+
+    public GameObject lightPrefab;
+    private Weapon selectedWeapon;
+
 
     public List<Entity> playerEntities;
     public PlayerEntity currentPlayer;
@@ -39,16 +48,33 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         mouseInput.Enable();
-        Entity.EntityInitilized += rankInitiative;
+        Entity.EntityInitilized += RankInitiative;
     }
 
     private void OnDisable()
     {
         mouseInput.Disable();
-        Entity.EntityInitilized -= rankInitiative;
+        Entity.EntityInitilized -= RankInitiative;
     }
 
-    private void rankInitiative()
+    private void SelectWeapon(Weapon weapon)
+    {
+        if (currentPlayer.RemainingActions != 0)
+        {
+            if (selectedWeapon != null)
+            {
+                currentPlayer.HideSquares(weapon);
+            }
+            else
+            {
+                currentPlayer.HideSquares();
+            }
+            selectedWeapon = weapon;
+            currentPlayer.RevealSquares(weapon);
+        }
+    }
+
+    private void RankInitiative()
     {
         initializedEntites++;
         if(initializedEntites == entities.transform.childCount)
@@ -79,10 +105,29 @@ public class GameManager : MonoBehaviour
                 if(child.GetComponent<Entity>() is PlayerEntity player)
                 {
                     playerEntities.Add(player);
+                    /*GameObject light = Instantiate(lightPrefab, player.transform);
+                    light.GetComponent<Light2D>().SetShapePath(new Vector3[] { });*/
                 }
             }
             turnIndex = initiativeList.Count - 1;
             NextTurn();
+        }
+    }
+
+    public void RemoveEntity(Entity entity)
+    {
+        int index =  initiativeList.IndexOf(entity);
+        if(index <= turnIndex)
+        {
+            turnIndex--;
+        }
+        initiativeList.Remove(entity);
+        nodeMap[entity.position].occupier = null;
+        Destroy(entity.gameObject);
+        if(currentPlayer != null)
+        {
+            currentPlayer.CalculateSquares();
+            currentPlayer.RevealSquares();
         }
     }
 
@@ -99,14 +144,31 @@ public class GameManager : MonoBehaviour
 
         if(currentPlayer != null)
         {
-            currentPlayer.HideSquares();
+            if (selectedWeapon != null)
+            {
+                currentPlayer.HideSquares(selectedWeapon);
+                selectedWeapon = null;
+            }
+            else
+                currentPlayer.HideSquares();
         }
 
         if(entity is PlayerEntity player)
         {
             player.RemainingEnergy = player.speed;
+            player.RemainingActions = player.actions;
             player.CalculateSquares();
             player.RevealSquares();
+            foreach(Transform child in weaponPanel.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            foreach(Weapon weapon in player.weapons)
+            {
+                GameObject newButton = Instantiate(weaponButton, weaponPanel.transform);
+                newButton.GetComponent<Button>().onClick.AddListener(() => SelectWeapon(weapon));
+                newButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = weapon.weaponName;
+            }
             currentPlayer = player;
         }
         else
@@ -124,9 +186,9 @@ public class GameManager : MonoBehaviour
                 {
                     destination = path.nodes[destination].previousNode;
                 }
-                entity.MoveTo((Vector3Int)destination);
-                NextTurn();
+                entity.MoveTo(destination);
             }
+            NextTurn();
         }
     }
 
@@ -138,8 +200,8 @@ public class GameManager : MonoBehaviour
         GenerateMap();
         foreach(Transform child in entities.transform)
         {
-            Vector3Int pos = child.GetComponent<Entity>().position;
-            nodeMap[(Vector2Int)pos].GetComponent<TileProperties>().occupier = child.GetComponent<Entity>();
+            Vector2Int pos = child.GetComponent<Entity>().position;
+            nodeMap[pos].occupier = child.GetComponent<Entity>();
         }
     }
 
@@ -149,34 +211,20 @@ public class GameManager : MonoBehaviour
         RaycastHit2D[] raycastHits = Physics2D.RaycastAll(mousePosition, Vector2.zero);
         if(raycastHits.Length > 0)
         {
-            Vector3Int position = raycastHits.OrderByDescending(i => i.collider.transform.position.z).First().collider.gameObject.GetComponent<TileProperties>().position;
+            Vector2Int position = (Vector2Int) raycastHits.OrderByDescending(i => i.collider.transform.position.z).First().collider.gameObject.GetComponent<TileProperties>().position;
             if (currentPlayer != null)
             {
-                if(currentPlayer.MovePlayerTo(position))
+                if (selectedWeapon == null)
                 {
-                    
+                    currentPlayer.MovePlayerTo(position);
                 }
-                /*else
+                else
                 {
-                    playerEntity.HideSquares();
-                    if (nodeMap[(Vector2Int)position].GetComponent<TileProperties>().occupier is PlayerEntity player)
-                    {
-                        playerEntity = player;
-                        playerEntity.RevealSquares();
-                    }
-                    else
-                    {
-                        playerEntity = null;
-                    }
+                    selectedWeapon.Attack(position, currentPlayer);
+                    currentPlayer.HideSquares(selectedWeapon);
+                    selectedWeapon = null;
+                    currentPlayer.RevealSquares();
                 }
-            }
-            else
-            {
-                if(nodeMap[(Vector2Int)position].GetComponent<TileProperties>().occupier is PlayerEntity player)
-                {
-                    playerEntity = player;
-                    playerEntity.RevealSquares();
-                }*/
             }
         }
     }
@@ -208,11 +256,11 @@ public class GameManager : MonoBehaviour
                         TileBase tile = tilemap.GetTile(currentTile);
                         if (tile != null)
                         {
-                            nodeMap[(Vector2Int)currentTile] = Instantiate(overlayTile, tilemap.CellToWorld(currentTile) + new Vector3(0, initialTileYOffset, 0.2f), Quaternion.identity, overlayContainer.transform);
+                            nodeMap[(Vector2Int)currentTile] = Instantiate(overlayTile, tilemap.CellToWorld(currentTile) + new Vector3(0, initialTileYOffset, 0.2f), Quaternion.identity, overlayContainer.transform).GetComponent<TileProperties>();
                             if (z != 0 || true) // Sometimes needed, sometimes not, idk
                                 nodeMap[(Vector2Int)currentTile].transform.position -= new Vector3(0, tileHeightOffset);
-                            nodeMap[(Vector2Int)currentTile].GetComponent<TileProperties>().SetVars(currentTile, 1, (Tile)tile);
-                            nodeMap[(Vector2Int)currentTile].name = ((Vector2Int)currentTile).ToString();
+                            nodeMap[(Vector2Int)currentTile].SetVars(currentTile, 1, (Tile)tile);
+                            nodeMap[(Vector2Int)currentTile].gameObject.name = ((Vector2Int)currentTile).ToString();
                             //nodeMap[(Vector2Int)currentTile].GetComponent<SpriteRenderer>().sortingLayerName = "Overlay";
                             //print($"Added key ({x}, {y}) at height {z}");
                         }

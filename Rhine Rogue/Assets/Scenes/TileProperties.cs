@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class TileProperties : MonoBehaviour
 {
-    private const int spriteNameOffset = 12;
+    private const int spriteNameOffset = 4;
     public Vector3Int position;
     public TerrainType terrain;
     public int movementCost;
@@ -17,8 +17,9 @@ public class TileProperties : MonoBehaviour
         this.position = position;
         this.movementCost = movementCost;
         this.tile = tile;
-
-        int tileNum = int.Parse(tile.sprite.name[spriteNameOffset..]);
+        //print(tile.sprite.name);
+        int tileNum = 0;
+        //int tileNum = int.Parse(tile.sprite.name[spriteNameOffset..]);
         if ((tileNum >= 0 && tileNum <= 40) || (tileNum >= 61 && tileNum <= 63) || (tileNum >= 68 && tileNum <= 70))
             terrain = TerrainType.Ground;
         else if (tileNum >= 86 && tileNum <= 114)
