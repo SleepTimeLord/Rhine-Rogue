@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     private const float tileHeightOffset = 0.095f;
     public Tilemap tilemap;
     public Dictionary<Vector2Int, TileProperties> nodeMap = new();
-    public Mouse mouseInput;
+    public MouseControlActions mouseInput;
     public GameObject overlayTile;
     public GameObject overlayContainer;
     public GameObject cursor;
@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        mouseInput = new Mouse();
+        mouseInput = new MouseControlActions();
     }
 
     private void OnEnable()
