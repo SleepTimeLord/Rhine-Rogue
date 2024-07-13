@@ -38,11 +38,6 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     private float maxRotationSpeed = 1f;
 
-    // screen edge motion
-    [SerializeField]
-    [Range(0f, 0.1f)]
-    private float edgeTolerance = 0.05f;
-
     //value set in various functions 
     //used to update the position of the camera base object.
     private Vector3 targetPosition;
