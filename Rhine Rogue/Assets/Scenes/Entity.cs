@@ -8,7 +8,7 @@ public class Entity : MonoBehaviour
 {
     public static GameManager gameManager;
 
-    public const float yOffset = 0.375f;
+    public const float yOffset = 0.501f;
     public float health;
     private float currentHealth;
     public float CurrentHealth
@@ -70,7 +70,7 @@ public class Entity : MonoBehaviour
     {
         gameManager.nodeMap[this.position].occupier = null;
         Vector3Int nodePosition = gameManager.nodeMap[position].position; // Just in case the Z on position is wrong
-        transform.position = gameManager.tilemap.GetCellCenterWorld(nodePosition) + new Vector3(0, yOffset);
+        transform.position = gameManager.nodeMap[position].transform.position + new Vector3(0, yOffset);
         this.position = (Vector2Int) nodePosition;
         gameManager.nodeMap[position].occupier = this;
     }

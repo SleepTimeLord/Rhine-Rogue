@@ -77,7 +77,7 @@ public class PlayerEntity : Entity
         foreach(var key in possibleSquares.Keys)
         {
             if (gameManager.nodeMap[key].occupier == null)
-                gameManager.nodeMap[key].gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                gameManager.nodeMap[key].transform.Find("TileOverlay").GetComponent<SpriteRenderer>().color = new Color(0.3725f, 0.3725f, 0.3725f, 1);
         }
     }
     public void RevealSquares(Weapon weapon)
@@ -85,7 +85,7 @@ public class PlayerEntity : Entity
         foreach (var key in weapon.weaponRange)
         {
             if (gameManager.nodeMap.ContainsKey(position + key))
-                gameManager.nodeMap[position + key].gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
+                gameManager.nodeMap[position + key].transform.Find("TileOverlay").GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
         }
     }
 
@@ -93,7 +93,7 @@ public class PlayerEntity : Entity
     {
         foreach (var key in possibleSquares.Keys)
         {
-            gameManager.nodeMap[key].gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+            gameManager.nodeMap[key].transform.Find("TileOverlay").GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
         }
     }
 
@@ -102,7 +102,7 @@ public class PlayerEntity : Entity
         foreach (var key in weapon.weaponRange)
         {
             if (gameManager.nodeMap.ContainsKey(position + key))
-                gameManager.nodeMap[position + key].gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+                gameManager.nodeMap[position + key].transform.Find("TileOverlay").GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
         }
     }
 }

@@ -11,9 +11,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    private const float initialTileYOffset = 0.375f;
-    private const float tileHeightOffset = 0.095f;
-    public Tilemap tilemap;
+    public GameObject grid;
     public Dictionary<Vector2Int, TileProperties> nodeMap = new();
     public MouseControlActions mouseInput;
     public GameObject overlayTile;
@@ -174,7 +172,7 @@ public class GameManager : MonoBehaviour
         else
         {
             currentPlayer = null;
-            (Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> nodes, Vector2Int location) path = Entity.FindPathsAtPoint((Vector2Int)entity.position, playerEntities, -1);
+            (Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> nodes, Vector2Int location) path = Entity.FindPathsAtPoint(entity.position, playerEntities, -1);
             if(path.location != (Vector2Int)entity.position)
             {
                 Vector2Int destination = path.location;
@@ -207,11 +205,12 @@ public class GameManager : MonoBehaviour
 
     private void MouseClick()
     {
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
-        RaycastHit2D[] raycastHits = Physics2D.RaycastAll(mousePosition, Vector2.zero);
-        if(raycastHits.Length > 0)
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
+        Ray ray = Camera.main.ScreenPointToRay(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
+        Debug.DrawRay(mousePosition, Camera.main.transform.forward);
+        if(Physics.Raycast(ray, out RaycastHit hit))
         {
-            Vector2Int position = (Vector2Int) raycastHits.OrderByDescending(i => i.collider.transform.position.z).First().collider.gameObject.GetComponent<TileProperties>().position;
+            Vector2Int position = (Vector2Int) hit.collider.gameObject.GetComponent<TileProperties>().position;
             if (currentPlayer != null)
             {
                 if (selectedWeapon == null)
@@ -231,41 +230,27 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
-        RaycastHit2D[] raycastHits = Physics2D.RaycastAll(mousePosition, Vector2.zero);
-        if (raycastHits.Length > 0)
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
+        Ray ray = Camera.main.ScreenPointToRay(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            Vector3Int cellPosition = raycastHits.OrderByDescending(i => i.collider.transform.position.z).First().collider.gameObject.GetComponent<TileProperties>().position;
-            cursor.transform.position = tilemap.CellToWorld(cellPosition) + new Vector3(0, initialTileYOffset - tileHeightOffset, 1);
+            Vector3Int cellPosition = hit.collider.gameObject.GetComponent<TileProperties>().position;
+            cursor.transform.position = nodeMap[(Vector2Int)cellPosition].transform.position + new Vector3(0, 0.501f, 0);
         }
     }
 
     private void GenerateMap()
     {
-        tilemap.CompressBounds();
-        BoundsInt bounds = tilemap.cellBounds;
-        for (int z = bounds.max.z - 1; z >= bounds.min.z; z--)
+        foreach(Transform child in grid.transform)
         {
-            for (int y = bounds.min.y; y < bounds.max.y; y++)
+            Vector3Int position = child.GetComponent<TileProperties>().position;
+            if (!nodeMap.ContainsKey((Vector2Int) position))
             {
-                for (int x = bounds.min.x; x < bounds.max.x; x++)
-                {
-                    Vector3Int currentTile = new Vector3Int(x, y, z);
-                    if (!nodeMap.ContainsKey((Vector2Int) currentTile))
-                    {
-                        TileBase tile = tilemap.GetTile(currentTile);
-                        if (tile != null)
-                        {
-                            nodeMap[(Vector2Int)currentTile] = Instantiate(overlayTile, tilemap.CellToWorld(currentTile) + new Vector3(0, initialTileYOffset, 0.2f), Quaternion.identity, overlayContainer.transform).GetComponent<TileProperties>();
-                            if (z != 0 || true) // Sometimes needed, sometimes not, idk
-                                nodeMap[(Vector2Int)currentTile].transform.position -= new Vector3(0, tileHeightOffset);
-                            nodeMap[(Vector2Int)currentTile].SetVars(currentTile, 1, (Tile)tile);
-                            nodeMap[(Vector2Int)currentTile].gameObject.name = ((Vector2Int)currentTile).ToString();
-                            //nodeMap[(Vector2Int)currentTile].GetComponent<SpriteRenderer>().sortingLayerName = "Overlay";
-                            //print($"Added key ({x}, {y}) at height {z}");
-                        }
-                    }
-                }
+                nodeMap.Add((Vector2Int)position, child.GetComponent<TileProperties>());
+            }
+            else if (nodeMap[(Vector2Int)position].GetComponent<TileProperties>().position.y < position.y)
+            {
+                nodeMap[(Vector2Int)position] = child.GetComponent<TileProperties>();
             }
         }
         MapGenerated();
