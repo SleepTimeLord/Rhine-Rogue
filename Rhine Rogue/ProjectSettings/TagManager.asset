@@ -7,6 +7,7 @@ TagManager:
   - MapTile
   - Fog
   - Obstacle
+  - Enemy
   layers:
   - Default
   - TransparentFX
