@@ -22,7 +22,7 @@ public class FogTileManager : MonoBehaviour
             fogTileStates[fogTile] = true; // Initialize all fog tiles as active
             fogTile.SetActive(true); // Ensure they are visible initially
         }
-        Debug.Log($"Found {fogTileStates.Count} fog tiles.");
+        //Debug.Log($"Found {fogTileStates.Count} fog tiles.");
     }
 
     void InitializeObstacles()
@@ -32,7 +32,7 @@ public class FogTileManager : MonoBehaviour
         {
             obstaclePositions.Add(obstacle.transform.position);
         }
-        Debug.Log($"Found {obstaclePositions.Count} obstacles.");
+        //Debug.Log($"Found {obstaclePositions.Count} obstacles.");
     }
 
     public void ResetFogTileStates()

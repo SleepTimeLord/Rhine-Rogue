@@ -5,13 +5,15 @@ public class FogTiles : MonoBehaviour
 {
     private bool startEnemyScript = false;
 
-    private void Start()
+    private void OnEnable()
     {
         StartCoroutine(WaitBeforeStarting());
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        print("activated on "+other.gameObject.name);
+        print(other.CompareTag("Enemy") + " " + startEnemyScript);
         if (other.CompareTag("Enemy") && startEnemyScript)
         {
             Enemy enemy = other.GetComponent<Enemy>();

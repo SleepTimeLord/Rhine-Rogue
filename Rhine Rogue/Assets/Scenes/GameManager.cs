@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public GameObject lightPrefab;
     private Weapon selectedWeapon;
 
+    public LayerMask raycastMask;
 
     public List<Entity> playerEntities;
     public PlayerEntity currentPlayer;
@@ -208,7 +209,7 @@ public class GameManager : MonoBehaviour
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
         Ray ray = Camera.main.ScreenPointToRay(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
         Debug.DrawRay(mousePosition, Camera.main.transform.forward);
-        if(Physics.Raycast(ray, out RaycastHit hit))
+        if(Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, raycastMask))
         {
             Vector2Int position = (Vector2Int) hit.collider.gameObject.GetComponent<TileProperties>().position;
             if (currentPlayer != null)
@@ -232,10 +233,10 @@ public class GameManager : MonoBehaviour
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
         Ray ray = Camera.main.ScreenPointToRay(mouseInput.MouseInput.MousePosition.ReadValue<Vector2>());
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, raycastMask))
         {
-            Vector3Int cellPosition = hit.collider.gameObject.GetComponent<TileProperties>().position;
-            cursor.transform.position = nodeMap[(Vector2Int)cellPosition].transform.position + new Vector3(0, 0.501f, 0);
+                Vector3Int cellPosition = hit.collider.gameObject.GetComponent<TileProperties>().position;
+                cursor.transform.position = nodeMap[(Vector2Int)cellPosition].transform.position + new Vector3(0, 0.501f, 0);
         }
     }
 
