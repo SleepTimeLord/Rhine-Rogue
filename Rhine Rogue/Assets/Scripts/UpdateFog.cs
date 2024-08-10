@@ -9,7 +9,7 @@ public class UpdateFog : MonoBehaviour
 
     private void Start()
     {
-        PlayerLightRadius = FindAnyObjectByType<PlayerLightRadius>();
+        PlayerLightRadius = FindAnyObjectByType<PlayerLightRadius>(); // only finds one gameobject with it
         UpdateMap();
 
     }
