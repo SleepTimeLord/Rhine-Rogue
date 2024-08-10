@@ -33,7 +33,7 @@ public class Entity : MonoBehaviour
     public int baseInitiative;
     public float attack;
     public int actions;
-
+    
     public Weapon[] weapons;
 
     public delegate void EntityInitilization();
