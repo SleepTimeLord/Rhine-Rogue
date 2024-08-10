@@ -158,6 +158,7 @@ public class CameraController : MonoBehaviour
     }
     private void RotateCamera (InputAction.CallbackContext obj)
     {
+        Debug.Log(Mouse.current);
         if (!Mouse.current.rightButton.isPressed)
             return;
 
