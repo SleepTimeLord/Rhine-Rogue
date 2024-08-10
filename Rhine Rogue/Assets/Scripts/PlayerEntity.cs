@@ -6,6 +6,7 @@ using TMPro;
 
 public class PlayerEntity : Entity
 {
+    public UpdateFog updateFog;
     public static TextMeshProUGUI basicInfo;
     private Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> possibleSquares = new();
     public int lightRadius;
@@ -65,6 +66,7 @@ public class PlayerEntity : Entity
     {
         base.MoveTo(position);
         CalculateSquares();
+        updateFog.UpdateMap();
     }
 
     public void CalculateSquares()

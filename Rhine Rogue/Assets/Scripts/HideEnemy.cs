@@ -1,12 +1,13 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class HideEnemy : MonoBehaviour
 {
     private Renderer enemyRenderer;
 
-    private void Start()
+    void Start()
     {
         enemyRenderer = GetComponent<Renderer>();
+        SetVisibility(true);
     }
 
     public void SetVisibility(bool isVisible)

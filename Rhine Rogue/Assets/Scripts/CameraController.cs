@@ -47,10 +47,6 @@ public class CameraController : MonoBehaviour
     //used to track and maintain velocity w/o a rigidbody
     private Vector3 horizontalVelocity;
     private Vector3 lastPosition;
-
-    //tracks where the dragging action started
-    Vector3 startDrag;
-
     private void Awake()
     {
         cameraActions = new CameraControlActions();

@@ -10,8 +10,11 @@ public class FogTileManager : MonoBehaviour
 
     void Start()
     {
-        InitializeFogTiles();
-        InitializeObstacles();
+        if (MapScan.fogInitialized)
+        {
+            InitializeFogTiles();
+            InitializeObstacles();
+        }
     }
 
     void InitializeFogTiles()
@@ -22,7 +25,6 @@ public class FogTileManager : MonoBehaviour
             fogTileStates[fogTile] = true; // Initialize all fog tiles as active
             fogTile.SetActive(true); // Ensure they are visible initially
         }
-        //Debug.Log($"Found {fogTileStates.Count} fog tiles.");
     }
 
     void InitializeObstacles()
@@ -32,7 +34,6 @@ public class FogTileManager : MonoBehaviour
         {
             obstaclePositions.Add(obstacle.transform.position);
         }
-        //Debug.Log($"Found {obstaclePositions.Count} obstacles.");
     }
 
     public void ResetFogTileStates()
@@ -53,14 +54,16 @@ public class FogTileManager : MonoBehaviour
     public void RegisterLightSource(Vector3 position, float radius)
     {
         lightSources.Add((position, radius));
+        print(lightSources.Count);
     }
 
     public void ClearLightSources()
     {
         lightSources.Clear();
+        print(lightSources.Count);
     }
 
-    void Update()
+    public void InitializeMapUpdate()
     {
         if (lightSources.Count > 0)
         {
@@ -70,6 +73,10 @@ public class FogTileManager : MonoBehaviour
                 UpdateFogTileState(lightSource.position, lightSource.radius);
             }
             ClearLightSources();
+        }
+        else
+        {
+            Debug.Log("No light sources registered, skipping update");
         }
     }
 

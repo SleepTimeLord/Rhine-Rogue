@@ -6,9 +6,10 @@ public class MapScan : MonoBehaviour
 {
     public GameObject grid; 
     public GameObject fogPrefab;
-    public Transform fogContainer; 
+    public Transform fogContainer;
+    public static bool fogInitialized = false;
 
-    void Awake()
+    void Start()
     {
         InitializeFogGrid();
     }
@@ -25,6 +26,7 @@ public class MapScan : MonoBehaviour
             Vector3 position = child.position;
             CreateFogTileAboveBlock(position);
         }
+        fogInitialized = true;
     }
 
     void CreateFogTileAboveBlock(Vector3 blockPosition)
@@ -37,7 +39,7 @@ public class MapScan : MonoBehaviour
         if (!Physics.Raycast(rayStartPos, Vector3.down, out hit, Mathf.Infinity, LayerMask.GetMask("Obstacle")))
         {
             // If there's no obstacle, proceed with placing the fog tile
-            if (Physics.Raycast(rayStartPos, Vector3.down, out hit))
+            if (Physics.Raycast(rayStartPos, Vector3.down, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
             {
                 // Place the fog tile slightly above the detected surface
                 Vector3 fogPosition = hit.point + Vector3.up * 0.5f;
