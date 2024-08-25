@@ -123,6 +123,7 @@ MonoBehaviour:
   terrain: 1
   movementCost: 1
   occupier: {fileID: 0}
+  isUnderFog: 0
 --- !u!1001 &1371569486446021692
 PrefabInstance:
   m_ObjectHideFlags: 0

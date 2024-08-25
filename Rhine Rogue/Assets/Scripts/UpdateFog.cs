@@ -3,16 +3,15 @@ using UnityEngine;
 
 public class UpdateFog : MonoBehaviour
 {
-    public FogTileManager UpdateMapState;
-    private PlayerLightRadius PlayerLightRadius;
-    public bool MapUpdating = false;
+    public FogTileManager updateMapState;
+    //public bool MapUpdating = false; //keeping this if needed
+    //public GameObject LightSources;
 
     private void Start()
     {
-        PlayerLightRadius = FindAnyObjectByType<PlayerLightRadius>(); // only finds one gameobject with it
         UpdateMap();
-
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -23,21 +22,7 @@ public class UpdateFog : MonoBehaviour
 
     public void UpdateMap()
     {
-        StartCoroutine(UpdateDone());
-        if (MapUpdating) {
-            PlayerLightRadius.RegisterLightSource();
-            UpdateMapState.InitializeMapUpdate();
-        }
-        else
-        {
-            print(MapUpdating);
-        }
-
-    }
-    private IEnumerator UpdateDone()
-    {
-        MapUpdating = true;
-        yield return new WaitForSeconds(0.1f);
-        MapUpdating = false;
+        updateMapState.InitializeMapUpdate();
     }
 }
+

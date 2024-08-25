@@ -9,20 +9,20 @@ public class PlayerLightRadius : MonoBehaviour
     void Start()
     {
         fogTileManager = FindObjectOfType<FogTileManager>();
-        RegisterLightSource();
+        StartupLightSource();
     }
 
     void Update()
     {
      
     }
-    public void RegisterLightSource()
+    public void StartupLightSource()
     {
-        if (fogTileManager != null && MapScan.fogInitialized)
+        if (fogTileManager != null && CreateFog.fogInitialized)
         {
             fogTileManager.RegisterLightSource(transform.position, lightRadius);
             lightInitialized = true;
-            print(gameObject.name);
+            //print(gameObject.name);
         }
     }
 }

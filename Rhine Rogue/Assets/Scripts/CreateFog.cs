@@ -1,20 +1,22 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapScan : MonoBehaviour
+public class CreateFog : MonoBehaviour
 {
-    public GameObject grid; 
+    public GameObject grid;
     public GameObject fogPrefab;
     public Transform fogContainer;
     public static bool fogInitialized = false;
+
+    // Dictionary to store fog tiles based on their corresponding ground tile positions
+    public Dictionary<Vector3Int, GameObject> fogTilesByGroundPosition = new Dictionary<Vector3Int, GameObject>();
 
     void Start()
     {
         InitializeFogGrid();
     }
 
-    void InitializeFogGrid()
+    public void InitializeFogGrid()
     {
         if (fogContainer == null)
         {
@@ -24,12 +26,25 @@ public class MapScan : MonoBehaviour
         foreach (Transform child in grid.transform)
         {
             Vector3 position = child.position;
-            CreateFogTileAboveBlock(position);
+            Vector3Int groundPosition = new Vector3Int(
+                Mathf.FloorToInt(position.x),
+                Mathf.FloorToInt(position.z),
+                Mathf.FloorToInt(position.y)
+            );
+
+            // Place fog tile if conditions are met
+            GameObject fogTile = CreateFogTileAboveBlock(position);
+            if (fogTile != null)
+            {
+                fogTilesByGroundPosition[groundPosition] = fogTile;
+            }
         }
+
         fogInitialized = true;
     }
 
-    void CreateFogTileAboveBlock(Vector3 blockPosition)
+
+    GameObject CreateFogTileAboveBlock(Vector3 blockPosition)
     {
         // Cast a ray from above the block downwards to detect the top surface
         RaycastHit hit;
@@ -52,9 +67,15 @@ public class MapScan : MonoBehaviour
                 if (Physics.Raycast(fogPosition, Vector3.down, 2.0f, LayerMask.GetMask("Fog")))
                 {
                     Destroy(fogTile);
+                    return null; // Return null if the fog tile was destroyed
                 }
+
+                return fogTile; // Return the created fog tile
             }
         }
+
+        return null; // Return null if no fog tile was created
     }
 }
+
 
