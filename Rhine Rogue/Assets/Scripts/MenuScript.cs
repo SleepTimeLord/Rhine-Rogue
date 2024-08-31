@@ -11,6 +11,7 @@ using Unity.VisualScripting;
 
 public class MenuScript : MonoBehaviour
 {
+    public GameObject mainPanel;
     public AudioMixer audioMixer;
     public UniversalRenderPipelineAsset urpAsset;
     public GameObject audioPanel;
@@ -27,26 +28,33 @@ public class MenuScript : MonoBehaviour
 
     void Start()
     {
+        //Retrieve game's current URP Asset
         urpAsset = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
 
+        //Set the active panel to the audio section (settings menu opens up to audio first)
         activePanel = audioPanel;
         activePanel.SetActive(true);
 
+        //Listen to whenever render resolution slider or field changes (when one changes, the other also corresponds)
         renderSlider.onValueChanged.AddListener(OnSliderChanged);
         renderField.onValueChanged.AddListener(OnFieldChanged);
 
+        //Set vsyncToggle to current Vsync Setting; add listener to see when toggle is changed
         if (vsyncToggle != null)
         {
             vsyncToggle.isOn = QualitySettings.vSyncCount > 0;
             vsyncToggle.onValueChanged.AddListener(SetVsync);
         }
 
+        //Set fullscreenToggle to current Vsync Setting; add listener to see when toggle is changed
         fullscreenToggle.isOn = Screen.fullScreen;
         fullscreenToggle.onValueChanged.AddListener(SetVsync);
 
+        //Get all possible screen resolutions
         resolutions = Screen.resolutions;
         resDropdown.ClearOptions();
         
+        //Add all resolutions to a readable list, which is added to dropdown; current resolution is selected for dropdown value
         List<string> options = new List<string>();
         int CurrentResIndex = 0;
 
@@ -87,9 +95,9 @@ public class MenuScript : MonoBehaviour
 //PAUSE AND RESUME
     public void PauseGame()
     {
-        //Time.timeScale = 0f;
+        Time.timeScale = 0f;
         isPaused = true;
-        this.gameObject.SetActive(false);
+        mainPanel.SetActive(true);
 
     }
 
@@ -97,7 +105,7 @@ public class MenuScript : MonoBehaviour
     {
         Time.timeScale = 1f;
         isPaused = false;
-        this.gameObject.SetActive(true);
+        mainPanel.SetActive(false);
     }
 
 //AUDIO
