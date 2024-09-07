@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class SaveScript : MonoBehaviour
 {
+
+    void Start(){
+        LoadJson();
+    }
+
     public PlayerData playerData = new PlayerData();
 
     public void SaveJson()
@@ -16,7 +21,10 @@ public class SaveScript : MonoBehaviour
 
     public void LoadJson()
     {
-        
+        string filePath = Application.persistentDataPath + "/PlayerData.json";
+        string plrData = System.IO.File.ReadAllText(filePath);
+
+        Debug.Log(plrData);
     }
 
 }
