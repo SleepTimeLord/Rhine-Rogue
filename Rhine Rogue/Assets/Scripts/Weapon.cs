@@ -9,6 +9,7 @@ public class Weapon : MonoBehaviour
     public int blastRadius;
     public float damageFalloff;
     public string weaponName;
+    public List<StatusEffect> effects;
 
     public bool Attack(Vector2Int position, Entity user)
     {

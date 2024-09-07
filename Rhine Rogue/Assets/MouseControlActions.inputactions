@@ -1,5 +1,5 @@
 {
-    "name": "Mouse",
+    "name": "MouseControlActions",
     "maps": [
         {
             "name": "MouseInput",
