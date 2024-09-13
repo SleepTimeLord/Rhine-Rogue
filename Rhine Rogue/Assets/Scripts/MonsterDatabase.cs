@@ -4,32 +4,31 @@ using UnityEngine;
 
 public class MonsterDatabase : MonoBehaviour
 {
-    public void LoadJson()
-    {
-        string filePath = Application.persistentDataPath + "/PlayerData.json";
-        string plrData = System.IO.File.ReadAllText(filePath);
 
-        Debug.Log(plrData);
+    public List<Monster> monsterStorage = new List<Monster>();
+    public void SaveDatabase()
+    {
+        string monsterdata = JsonUtility.ToJson(monsterStorage);
+        string filePath = Application.persistentDataPath + "/MonsterDatabase.json";
+        System.IO.File.WriteAllText(filePath, monsterdata);
+        Debug.Log("Saved to" + Application.persistentDataPath);
     }
+
 }
 
 [System.Serializable]
 public class Monster{
-    public int tag;
     public RaceType type;
     public int health;
     public int mana;
-    public int attack;
     public int defense;
-    public List<Passive> passives = new List<Passive>();
+    public int attack;
+    public List<StatusEffect> statuses = new List<StatusEffect>();
     public List<Ability> abilities = new List<Ability>();
 }
 
 [System.Serializable]
 public class Ability{
-    public Weapon weapon;
-}
-
-public class Passive{
     public string name;
+    public string effect;
 }
