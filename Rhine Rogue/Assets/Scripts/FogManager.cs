@@ -1,25 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
 using UnityEngine;
 
 public class FogTileManager : MonoBehaviour
 {
     private Dictionary<GameObject, bool> fogTileStates = new Dictionary<GameObject, bool>();
     private List<Vector3> obstaclePositions = new List<Vector3>();
-    private List<(Vector3 position, float radius)> lightSources = new List<(Vector3 position, float radius)>();
-    public GameObject LightSources;
+    private List<(Vector3 position, float radius)> lightSourcesInfo = new List<(Vector3 position, float radius)>();
     public GameObject grid;
-    public Dictionary<Vector3Int, TileProperties> ground = new Dictionary<Vector3Int, TileProperties>();
-    //public HideEnemy hideEnemy;
+    //public Dictionary<Vector3Int, TileProperties> ground = new Dictionary<Vector3Int, TileProperties>();
+
     void Start()
     {
-        if (CreateFog.fogInitialized)
-        {
-            InitializeFogTiles();
-            InitializeObstacles();
-            InitializeLightRadius();
-        }
+        InitializeFogTiles();
+        InitializeObstacles();
+        InitializeLightRadius();
     }
 
     void InitializeFogTiles()
@@ -27,7 +22,9 @@ public class FogTileManager : MonoBehaviour
         GameObject[] fogTiles = GameObject.FindGameObjectsWithTag("Fog");
         foreach (GameObject fogTile in fogTiles)
         {
+            Renderer renderer = fogTile.GetComponent<Renderer>();
             fogTileStates[fogTile] = true; // Initialize all fog tiles as active
+            renderer.enabled = true;
             fogTile.SetActive(true); // Ensure they are visible initially
         }
     }
@@ -58,29 +55,29 @@ public class FogTileManager : MonoBehaviour
 
     public void RegisterLightSource(Vector3 position, float radius)
     {
-        lightSources.Add((position, radius));
-        //print(lightSources.Count);
+        lightSourcesInfo.Add((position, radius));
     }
 
     public void ClearLightSources()
     {
-        lightSources.Clear();
+        lightSourcesInfo.Clear();
     }
 
     public void InitializeMapUpdate() // updates map
     {
-        // InitializeLightRadius is the catalyst for the lightsources
+        // InitializeLightRadius is the catalyst for the light sources
         InitializeLightRadius();
-        if (lightSources.Count > 0)
+        if (lightSourcesInfo.Count > 0)
         {
             ResetFogTileStates();
-            foreach (var lightSource in lightSources)
+            foreach (var lightSource in lightSourcesInfo)
             {
                 UpdateFogTileState(lightSource.position, lightSource.radius);
             }
             ClearLightSources();
             InitializeFogTiles();
             InitializeGroundIsCoveredByFog();
+            CheckEnemyOnFog();
         }
         else
         {
@@ -88,21 +85,16 @@ public class FogTileManager : MonoBehaviour
         }
     }
 
-    private void InitializeLightRadius() // gets the light sources in the gameobject and Startup them in the PlayerLightRadius script
+    private void InitializeLightRadius() // gets all light sources with the PlayerLightRadius script and initializes them
     {
-        foreach (Transform child in LightSources.transform)
+        PlayerLightRadius[] lightSources = FindObjectsOfType<PlayerLightRadius>();
+        foreach (PlayerLightRadius playerLight in lightSources)
         {
-            PlayerLightRadius playerLight = child.GetComponent<PlayerLightRadius>();
             if (playerLight != null)
             {
                 playerLight.StartupLightSource();
-                //print("This is the light source name: " + child.name);
+                // Optional: print("Light source initialized: " + playerLight.gameObject.name);
             }
-            else
-            {
-                print(child.name + " doesn't have PlayerLightRadius script");
-            }
-
         }
     }
 
@@ -115,7 +107,7 @@ public class FogTileManager : MonoBehaviour
             float distance = Vector3.Distance(lightPosition, fogTile.transform.position);
             if (distance <= lightRadius)
             {
-                if (!IsFogTileBlocked(fogTile, lightPosition))
+                if (!IsFogTileBlocked(fogTile, lightPosition) || obstaclePositions.Contains(fogTile.transform.position))
                 {
                     fogTileStates[fogTile] = false;
                     fogTile.SetActive(false);
@@ -137,12 +129,7 @@ public class FogTileManager : MonoBehaviour
                 Ray ray = new Ray(lightPosition, direction);
                 if (Physics.Raycast(ray, out RaycastHit hit, distance, LayerMask.GetMask("Obstacle")))
                 {
-                    //Debug.DrawLine(ray.origin, hit.point, Color.red);
                     return true;
-                }
-                else
-                {
-                    //Debug.DrawLine(ray.origin, ray.origin + direction * distance, Color.green);
                 }
             }
         }
@@ -151,35 +138,59 @@ public class FogTileManager : MonoBehaviour
 
     public void InitializeGroundIsCoveredByFog()
     {
-        CreateFog createFog = FindObjectOfType<CreateFog>();
-        Dictionary<Vector3Int, GameObject> fogTiles = createFog.fogTilesByGroundPosition;
-
         foreach (Transform child in grid.transform)
         {
             TileProperties tileProperties = child.GetComponent<TileProperties>();
-            Vector3Int groundPosition = tileProperties.position;
+            if (tileProperties == null) continue;
 
-            if (!ground.ContainsKey(groundPosition))
+            // Check if any fog object is a child of the current tile
+            bool isUnderFog = false;
+            foreach (Transform fog in child)
             {
-                ground.Add(groundPosition, tileProperties);
+                GameObject fogObject = fog.gameObject;
+                if (fogTileStates.TryGetValue(fogObject, out bool fogActive))
+                {
+                    // Set isUnderFog based on the active state of the fog tile
+                    if (fogActive)
+                    {
+                        isUnderFog = true;
+                        break; // Exit early since any active fog means the tile is under fog
+                    }
+                }
             }
 
-            // Check if the ground position has a corresponding fog tile
-            if (fogTiles.ContainsKey(groundPosition) && fogTiles[groundPosition].activeSelf)
+            // Update the tile's fog state
+            tileProperties.isUnderFog = isUnderFog;
+        }
+    }
+
+    public void CheckEnemyOnFog()
+    {
+        GameObject[] Enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        TileProperties[] tileProperties = FindObjectsOfType<TileProperties>();
+
+        foreach (GameObject enemy in Enemies)
+        {
+            Renderer enemyRenderer = enemy.GetComponent<Renderer>();
+            Entity entity = enemy.GetComponent<Entity>();
+
+            if (entity == null) continue;
+
+            bool isVisible = false;
+            foreach (TileProperties tileProperty in tileProperties)
             {
-                tileProperties.isUnderFog = true;
+                if (tileProperty.occupier == null) continue;
+
+                // match the enemy with the tile that it's on
+                if (tileProperty.occupier == entity)
+                {
+                    isVisible = !tileProperty.isUnderFog;
+                    break;
+                }
             }
-            else
-            {
-                tileProperties.isUnderFog = false;
-            }
+            enemyRenderer.enabled = isVisible;
         }
 
-        // Final log to verify results
-        //foreach (var entry in ground)
-        //{
-        //    Debug.Log($"Position: {entry.Key}, Tile: {entry.Value}, IsUnderFog: {entry.Value.isUnderFog}");
-        //}
     }
 
 }

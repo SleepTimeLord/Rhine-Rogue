@@ -1,15 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
-public class UpdateFog : MonoBehaviour
+public class UpdateGame : MonoBehaviour
 {
     public FogTileManager updateMapState;
-    //public bool MapUpdating = false; //keeping this if needed
-    //public GameObject LightSources;
 
     private void Start()
     {
-        UpdateMap();
+        UpdateMap(); // This will call InitializeMapUpdate() once at start
     }
 
     private void Update()

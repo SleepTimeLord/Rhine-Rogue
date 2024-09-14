@@ -6,7 +6,7 @@ using TMPro;
 
 public class PlayerEntity : Entity
 {
-    public UpdateFog updateFog;
+    public UpdateGame updateFog;
     public static TextMeshProUGUI basicInfo;
     private Dictionary<Vector2Int, (Vector2Int previousNode, float cost)> possibleSquares = new();
     public int lightRadius;

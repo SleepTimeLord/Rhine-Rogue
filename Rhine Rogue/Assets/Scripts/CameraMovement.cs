@@ -90,22 +90,22 @@ public class CameraMovement : MonoBehaviour
 
         if (Input.mousePosition.x > Screen.width - edgeScrollSize) 
         {
-            print("right");
+            //print("right");
             inputValue.x = +1f;
         }
         if (Input.mousePosition.y > Screen.height - edgeScrollSize) 
         {
-            print("up");
+            //print("up");
             inputValue.z = +1f;
         }
         if (Input.mousePosition.x < edgeScrollSize) 
         {
-            print("left");
+            //print("left");
             inputValue.x = -1f;
         }
         if (Input.mousePosition.y < edgeScrollSize) 
         {
-            print("down");
+            //print("down");
             inputValue.z = -1f;
         }
 

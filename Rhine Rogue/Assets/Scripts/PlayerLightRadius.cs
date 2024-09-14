@@ -18,7 +18,7 @@ public class PlayerLightRadius : MonoBehaviour
     }
     public void StartupLightSource()
     {
-        if (fogTileManager != null && CreateFog.fogInitialized)
+        if (fogTileManager != null)
         {
             fogTileManager.RegisterLightSource(transform.position, lightRadius);
             lightInitialized = true;

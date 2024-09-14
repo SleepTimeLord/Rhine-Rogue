@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3528904404501780151}
   - component: {fileID: 4369286473118819517}
   - component: {fileID: 2401772739543741287}
-  - component: {fileID: -3307846016379107953}
   m_Layer: 3
   m_Name: fogcube
   m_TagString: Fog
@@ -106,15 +105,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-3307846016379107953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5278561045991284994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 897a0edfad71cdf4e8078870900d5e19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
