@@ -56,7 +56,7 @@ public class CreateFog : MonoBehaviour
             Vector3 fogPosition = new Vector3(hit.point.x, 3f,hit.point.z);
             GameObject fogTile = Instantiate(fogPrefab, fogPosition, Quaternion.identity);
 
-            fogTile.transform.localScale = new Vector3(1, 1, 1);
+            fogTile.transform.localScale = new Vector3(1, 5, 1);
             fogTile.layer = LayerMask.NameToLayer("Fog");
             fogTile.tag = "Fog";
 

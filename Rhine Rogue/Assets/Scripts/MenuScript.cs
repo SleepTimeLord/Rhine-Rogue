@@ -7,6 +7,7 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 
 
 public class MenuScript : MonoBehaviour
@@ -20,6 +21,9 @@ public class MenuScript : MonoBehaviour
     public Toggle vsyncToggle;
     public Toggle fullscreenToggle;
     public TMP_Dropdown resDropdown;
+
+    //TEST
+    public MonsterDatabase database;
 
     public bool isPaused;
     private GameObject activePanel;
@@ -77,6 +81,9 @@ public class MenuScript : MonoBehaviour
 //SWITCH BETWEEN PANELS
     public void SetPanel(GameObject panel)
     {
+
+        database.LoadRandomMonster();
+
         if (!activePanel)
         {
             activePanel = panel;

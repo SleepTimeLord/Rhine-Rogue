@@ -28878,6 +28878,7 @@ MonoBehaviour:
   vsyncToggle: {fileID: 1664011946}
   fullscreenToggle: {fileID: 1318563285}
   resDropdown: {fileID: 147037403}
+  database: {fileID: 11400000, guid: 17b71a307de52be448f10a7fbf7a0765, type: 2}
   isPaused: 0
 --- !u!114 &1904918759
 MonoBehaviour:

@@ -1,34 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 
-public class MonsterDatabase : MonoBehaviour
+[CreateAssetMenu(fileName = "New Monster Database")]
+public class MonsterDatabase : ScriptableObject
 {
+    public List<GameObject> allMonsters;
 
-    public List<Monster> monsterStorage = new List<Monster>();
-    public void SaveDatabase()
-    {
-        string monsterdata = JsonUtility.ToJson(monsterStorage);
-        string filePath = Application.persistentDataPath + "/MonsterDatabase.json";
-        System.IO.File.WriteAllText(filePath, monsterdata);
-        Debug.Log("Saved to" + Application.persistentDataPath);
+    //Can separate diff sections for diff regions that certain monsters spawn in
+
+    public GameObject LoadRandomMonster(){
+        return allMonsters[Random.Range(0, allMonsters.Count)];
     }
 
-}
-
-[System.Serializable]
-public class Monster{
-    public RaceType type;
-    public int health;
-    public int mana;
-    public int defense;
-    public int attack;
-    public List<StatusEffect> statuses = new List<StatusEffect>();
-    public List<Ability> abilities = new List<Ability>();
-}
-
-[System.Serializable]
-public class Ability{
-    public string name;
-    public string effect;
 }
