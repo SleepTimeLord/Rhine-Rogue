@@ -27,5 +27,6 @@ public class TileProperties : MonoBehaviour
 public enum TerrainType
 {
     Water,
-    Ground
+    Ground,
+    Obstacle
 }
