@@ -5473,7 +5473,6 @@ GameObject:
   - component: {fileID: 394845656}
   - component: {fileID: 394845655}
   - component: {fileID: 394845657}
-  - component: {fileID: 394845658}
   m_Layer: 0
   m_Name: FogManager
   m_TagString: Untagged
@@ -5494,6 +5493,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 73881762}
+  darkness: {fileID: 2100000, guid: 4214ed1a55023d24b8a80fb333e1b71b, type: 2}
+  obstaclecolor: {fileID: 2100000, guid: 3a28b1a1c74d2ed469e5b1f306c03963, type: 2}
 --- !u!4 &394845656
 Transform:
   m_ObjectHideFlags: 0
@@ -5522,20 +5523,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateMapState: {fileID: 394845655}
---- !u!114 &394845658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 394845653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6fc71c17e5302146bb36fe856a5a26b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grid: {fileID: 73881762}
-  fogPrefab: {fileID: 5278561045991284994, guid: 350dfdd6e927f7c44becde4d96c9bf5f, type: 3}
 --- !u!4 &399102686 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1146261611897539346, guid: 2cac0977a63ca7040a0e3ab6e67f3cf7, type: 3}
@@ -20745,7 +20732,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1639418957}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.28978413, y: -0.00000001646809, z: 0.000000004986136, w: 0.95709205}
+  m_LocalRotation: {x: 0.28978413, y: 0.000000016468093, z: -0.0000000049861373, w: 0.95709205}
   m_LocalPosition: {x: 0, y: 8.85, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -22906,7 +22893,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1893019304}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.28978413, y: -0.00000001646809, z: 0.000000004986136, w: 0.95709205}
+  m_LocalRotation: {x: 0.28978413, y: 0.000000016468093, z: -0.0000000049861373, w: 0.95709205}
   m_LocalPosition: {x: 0, y: 8.85, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -24026,7 +24013,7 @@ MonoBehaviour:
   lightPrefab: {fileID: 854264144574666468, guid: d55c6635456316c4c910f93d679911c8, type: 3}
   raycastMask:
     serializedVersion: 2
-    m_Bits: 247
+    m_Bits: 119
   playerEntities: []
   currentPlayer: {fileID: 0}
   entities: {fileID: 1517372411}
