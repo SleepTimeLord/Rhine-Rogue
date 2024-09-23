@@ -37,7 +37,14 @@ public class FogTileManager : MonoBehaviour
         foreach (TileProperties blockProperty in blockProperties)
         {
             // Set all tiles to be under fog by default
+            GameObject obj = blockProperty.gameObject;
+            Renderer renderer = obj.GetComponent<Renderer>();
             blockProperty.isUnderFog = true;
+
+            if (blockProperty.position.z >= 1)
+            {
+                renderer.enabled = false;
+            }
         }
     }
 
@@ -96,6 +103,7 @@ public class FogTileManager : MonoBehaviour
         foreach (TileProperties blockProperty in blockProperties)
         {
             GameObject obj = blockProperty.gameObject;
+            Renderer renderer = obj.GetComponent<Renderer>();
             Vector3 gridTilePosition = blockProperty.transform.position + Vector3.up;
             float distance = Vector3.Distance(lightPosition, gridTilePosition);
 
@@ -107,10 +115,20 @@ public class FogTileManager : MonoBehaviour
                 if (isObstacle)
                 {
                     blockProperty.isUnderFog = false;
+
+                    if (blockProperty.position.z >= 1)
+                    {
+                        renderer.enabled = true;
+                    }
                 }
                 else if (!IsFogTileBlocked(gridTilePosition, lightPosition))
                 {
                     blockProperty.isUnderFog = false;
+
+                    if (blockProperty.position.z >= 1)
+                    {
+                        renderer.enabled = true;
+                    }
                 }
             }
         }
