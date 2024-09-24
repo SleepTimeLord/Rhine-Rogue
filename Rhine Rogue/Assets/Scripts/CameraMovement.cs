@@ -1,9 +1,12 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -30,13 +33,54 @@ public class CameraMovement : MonoBehaviour
     [SerializeField]
     private float followOffsetMax = 50f;
     private Vector3 followOffset;
+    public GameObject grid;
 
+    public int maxX;
+    public int maxY;
+    public int minX;
+    public int minY;
+    public int extraRange = 2;
     // Start is called before the first frame update
     private void Awake()
     {
         transform.position = new Vector3 (0, -5, 0);
         followOffset = virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
 
+
+    }
+    private void Start()
+    {
+        FindMapMax();
+    }
+
+    private void FindMapMax()
+    {
+        if (grid == null)
+        {
+            print("no grid assigned");
+        }
+
+        List<int> xPosition = new List<int>();
+        List<int> yPosition = new List<int>();
+
+        foreach (Transform block in grid.transform)
+        {
+            TileProperties tileProperties = block.GetComponent<TileProperties>();
+            if (block == null) continue;
+            if (tileProperties == null) continue;
+
+            int xNumbers = tileProperties.position.x.ConvertTo<int>();
+            int yNumbers = tileProperties.position.y.ConvertTo<int>();
+ 
+            xPosition.Add(xNumbers);
+            yPosition.Add(yNumbers);
+
+            maxX = xPosition.Max() + extraRange;
+            maxY = yPosition.Max() + extraRange;
+            minX = xPosition.Min() - extraRange;
+            minY = yPosition.Min() - extraRange;
+        }
+        print(maxY);
     }
     private void OnEnable()
     {
@@ -74,15 +118,41 @@ public class CameraMovement : MonoBehaviour
 
     void KeyBoardMovement()
     {
-
+        Vector3 position = transform.position;
         Vector3 readValue = movement.ReadValue<Vector2>();
         Vector3 inputValue = new Vector3(readValue.x, 0, readValue.y);
         inputValue = inputValue.normalized;
 
+        // Use local directions for relative movement (based on object rotation)
         Vector3 moveDir = transform.forward * inputValue.z + transform.right * inputValue.x;
 
+        // Stop movement if at boundaries, but keep using the transformed movement direction
+        if (position.x >= maxX && moveDir.x > 0)
+        {
+            moveDir.x = 0;
+            print("reached maxX");
+        }
+        if (position.x <= minX && moveDir.x < 0)
+        {
+            moveDir.x = 0;
+            print("reached minX");
+        }
+        if (position.z >= maxY && moveDir.z > 0)
+        {
+            moveDir.z = 0;
+            print("reached maxY");
+        }
+        if (position.z <= minY && moveDir.z < 0)
+        {
+            moveDir.z = 0;
+            print("reached minY");
+        }
+
+        // Apply movement
         transform.position += moveDir * moveSpeed * Time.deltaTime;
     }
+
+
 
     void EdgeScrolling()
     {
