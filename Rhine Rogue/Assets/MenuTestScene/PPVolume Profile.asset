@@ -40,12 +40,12 @@ MonoBehaviour:
   active: 1
   lift:
     m_OverrideState: 1
-    m_Value: {x: 0.97661066, y: 0.9722418, z: 1, w: -0.029454973}
+    m_Value: {x: 0.9133098, y: 0.9812259, z: 1, w: -0.044182513}
   gamma:
-    m_OverrideState: 1
-    m_Value: {x: 0.9055592, y: 0.95818585, z: 1, w: 0.014727545}
+    m_OverrideState: 0
+    m_Value: {x: 0.8745916, y: 0.9235569, z: 1, w: 0.014727545}
   gain:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: {x: 0.9562842, y: 1, z: 0.92499423, w: 0}
 --- !u!114 &-5308197262496477670
 MonoBehaviour:
@@ -312,7 +312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f335fb1ffd8684294ad653bf1c7564, type: 3}
   m_Name: ColorAdjustments
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   postExposure:
     m_OverrideState: 1
     m_Value: 0
@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   skipIterations:
     m_OverrideState: 0
     m_Value: 1
@@ -508,13 +508,13 @@ MonoBehaviour:
   active: 1
   shadows:
     m_OverrideState: 1
-    m_Value: {x: 0.8706126, y: 0.916459, z: 1, w: -0.10309278}
+    m_Value: {x: 0.87194556, y: 0.92410463, z: 1, w: 0.04418274}
   midtones:
     m_OverrideState: 1
-    m_Value: {x: 0.9919603, y: 1, z: 0.9176027, w: 0}
+    m_Value: {x: 0.9316519, y: 1, z: 0.9870623, w: 0}
   highlights:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 0.9448257, z: 0.7552774, w: 0}
+    m_Value: {x: 0.87267613, y: 0.94411576, z: 1, w: 0.029455084}
   shadowsStart:
     m_OverrideState: 1
     m_Value: 0
