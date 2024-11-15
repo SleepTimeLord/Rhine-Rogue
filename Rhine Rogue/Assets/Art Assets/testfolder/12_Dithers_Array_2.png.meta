@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c07a70d451a60e24899a06a8a30549f1
+guid: 32a83aaa2c569674fb3330ff8c0edf5f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 125
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Dithering_Array_10_0
+      name: 12_Dithers_Array_2_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 20
-        width: 8
-        height: 20
+        y: 25
+        width: 7
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,20 +124,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7dd8eb6a31a5c1241b25458d9dd84ac4
-      internalID: -781428788
+      spriteID: 68e5e3a764941674db7f4cc6ba06fbec
+      internalID: 1781209210
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dithering_Array_10_1
+      name: 12_Dithers_Array_2_1
       rect:
         serializedVersion: 2
-        x: 8
-        y: 20
-        width: 8
-        height: 20
+        x: 7
+        y: 25
+        width: 7
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,20 +145,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2d1c6f10cf34a824f90c8d8c88808bdb
-      internalID: 2099064261
+      spriteID: af6f8e15ebb2cc24db8bb228778978e5
+      internalID: 1704974170
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dithering_Array_10_2
+      name: 12_Dithers_Array_2_2
       rect:
         serializedVersion: 2
-        x: 16
-        y: 20
-        width: 8
-        height: 20
+        x: 14
+        y: 25
+        width: 7
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -166,62 +166,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 586a6ec9a6a52504c855325f93842900
-      internalID: -1876238466
+      spriteID: 497a6cb3564ff364a881143113ee6972
+      internalID: 580082058
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dithering_Array_10_3
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 20
-        width: 8
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 557f04142b1a9c84cbeee1f7c730b5d1
-      internalID: -860043773
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Dithering_Array_10_4
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 20
-        width: 8
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d9b9317f4c190294eb5c026756898b96
-      internalID: 80064414
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Dithering_Array_10_5
+      name: 12_Dithers_Array_2_3
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 8
-        height: 20
+        y: 18
+        width: 7
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -229,20 +187,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 53ee4dc888fe3be429447a896bdb11b5
-      internalID: 271313981
+      spriteID: 4dfe5531805cc0b48bd8129e13f12ee8
+      internalID: -173249627
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dithering_Array_10_6
+      name: 12_Dithers_Array_2_4
       rect:
         serializedVersion: 2
-        x: 8
-        y: 0
-        width: 8
-        height: 20
+        x: 7
+        y: 18
+        width: 7
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -250,20 +208,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 170d2823b444c7f4680509f863b0a734
-      internalID: -1501818834
+      spriteID: ca7882c246a75054e8e0392de98040c7
+      internalID: -1043082912
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dithering_Array_10_7
+      name: 12_Dithers_Array_2_5
       rect:
         serializedVersion: 2
-        x: 16
-        y: 0
-        width: 8
-        height: 20
+        x: 14
+        y: 18
+        width: 7
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -271,20 +229,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 344aaf4fb101858478d9c7b8f7d53d97
-      internalID: -859365072
+      spriteID: 49200d113a3c82747a4408d15745a8d9
+      internalID: -1380604583
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dithering_Array_10_8
+      name: 12_Dithers_Array_2_6
       rect:
         serializedVersion: 2
-        x: 24
-        y: 0
-        width: 8
-        height: 20
+        x: 0
+        y: 11
+        width: 7
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -292,20 +250,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cd82bc032284bea4db1214d7f9a6f3c5
-      internalID: -1779562864
+      spriteID: a5466b04d5de67d4598041feaec9a926
+      internalID: 654840692
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dithering_Array_10_9
+      name: 12_Dithers_Array_2_7
       rect:
         serializedVersion: 2
-        x: 32
-        y: 0
-        width: 8
-        height: 20
+        x: 7
+        y: 11
+        width: 7
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -313,8 +271,92 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a0f9a192c8ac7c141b0e6006e125607c
-      internalID: 1360622021
+      spriteID: 39c2c98f197566a479bb6cfb69ec75ea
+      internalID: 592820595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 12_Dithers_Array_2_8
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 11
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ee411eae07dbe447a35926e48564644
+      internalID: -1322084582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 12_Dithers_Array_2_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 27d8dd942fec3e144a641fa1d41e712a
+      internalID: -2013349375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 12_Dithers_Array_2_10
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 4
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20bf986a2cc5701428961cdff09d4fbe
+      internalID: 783159101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 12_Dithers_Array_2_11
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 4
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f8d857119f717c4fa1c086c500cc8a2
+      internalID: -1408481550
       vertices: []
       indices: 
       edges: []
@@ -330,16 +372,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Dithering_Array_10_0: -781428788
-      Dithering_Array_10_1: 2099064261
-      Dithering_Array_10_2: -1876238466
-      Dithering_Array_10_3: -860043773
-      Dithering_Array_10_4: 80064414
-      Dithering_Array_10_5: 271313981
-      Dithering_Array_10_6: -1501818834
-      Dithering_Array_10_7: -859365072
-      Dithering_Array_10_8: -1779562864
-      Dithering_Array_10_9: 1360622021
+      12_Dithers_Array_2_0: 1781209210
+      12_Dithers_Array_2_1: 1704974170
+      12_Dithers_Array_2_10: 783159101
+      12_Dithers_Array_2_11: -1408481550
+      12_Dithers_Array_2_2: 580082058
+      12_Dithers_Array_2_3: -173249627
+      12_Dithers_Array_2_4: -1043082912
+      12_Dithers_Array_2_5: -1380604583
+      12_Dithers_Array_2_6: 654840692
+      12_Dithers_Array_2_7: 592820595
+      12_Dithers_Array_2_8: -1322084582
+      12_Dithers_Array_2_9: -2013349375
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
